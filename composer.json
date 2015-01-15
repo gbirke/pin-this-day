@@ -1,0 +1,12 @@
+{
+    "autoload": {
+        "psr-4": {
+            "Birke\\PinThisDay\\": "src/"
+        }
+    },
+    "require": {
+        "silex/silex": "~1.2",
+        "symfony/console": "~2.6",
+        "kijin/pinboard-api": "0.3.*"
+    }
+}
