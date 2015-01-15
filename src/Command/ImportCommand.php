@@ -17,30 +17,17 @@ class ImportCommand extends Command
      */
     protected $api;
 
+    /**
+     *
+     * @var AuthConfig
+     */
+    protected $authConfig;
 
     protected function configure()
     {
         $this
             ->setName('import:date')
             ->setDescription('Import bookmarks for a specific day and user')
-            ->addArgument(
-                'name',
-                InputArgument::OPTIONAL,
-                'Who do you want to greet?'
-            )
-            ->addOption(
-                'user',
-                'u',
-                InputOption::VALUE_REQUIRED,
-                'pinboard.in user name'
-            )
-
-            ->addOption(
-                'api_key',
-                'a',
-                InputOption::VALUE_REQUIRED,
-                'pinboard.in API key'
-            )
 
             ->addOption(
                 'date',
@@ -49,25 +36,27 @@ class ImportCommand extends Command
                 'Date for which to look. Format YYYY-MM-DD'
             )
         ;
+        $this->authConfig = new AuthConfig;
+        $this->authConfig->configureCommand($this);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $user = $input->getOption('user');
-        $apiKey = $input->getOption('api_key');
-        if (!$user || !$apiKey) {
-            $output->writeln("Missing credentials.");
+        try {
+            $apiKey = $this->authConfig->getApiKeyFromInput($input);
+        } catch (\RuntimeException $ex) {
+            $output->writeln($ex->getMessage());
             return;
         }
-        $this->initApi("$user:$apiKey");
+        $this->initApi($apiKey);
         $date = new \DateTime($input->getOption("date"));
         try {
             $dates = $this->getDates($date);
         } catch (\RuntimeException $ex) {
             $output->writeln($ex->getMessage());
+            return;
         }
-        
-        
+        $this->importBookmarksFromDates($dates);
         
         $output->writeln("Dates:".implode(", ", $dates));
     }
