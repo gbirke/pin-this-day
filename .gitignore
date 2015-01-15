@@ -1,4 +1,5 @@
 /nbproject
+.idea
 vendor
 test.php
 .env
