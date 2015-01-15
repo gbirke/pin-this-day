@@ -20,7 +20,7 @@ if (!$dsn) {
 
 // Parameters
 $app["pinboard_url"] = "https://pinboard.in/";
-$app["cache.default_time"] = 400;
+$app["cache.default_time"] = 60;
 
 // Services
 $app->register(new Silex\Provider\TwigServiceProvider(), array(

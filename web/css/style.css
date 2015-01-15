@@ -1,0 +1,33 @@
+/* layout */
+footer {
+    margin-top: 2em;
+}
+
+.year {
+    border-bottom:dotted grey 1px;
+    max-width: 750px;
+}
+
+.year a {
+    color:inherit;
+}
+
+/* Bookmarks */
+.bookmark {
+    margin-bottom:1.7em;
+    max-width: 750px;
+}
+
+.bookmark .bookmark_title {
+    line-height: 130%;
+    font-size: 120%;
+    text-decoration: none;
+}
+
+.bookmark .description {
+    margin-top:2px;
+}
+
+.bookmark .tag {
+    text-decoration: none;
+}

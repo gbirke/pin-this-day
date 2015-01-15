@@ -10,19 +10,16 @@
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
-    <style>
-        /* small adjustment, will be moved to own stylesheet later */
-        footer {
-            margin-top: 2em;
-        }
-    </style>
+
+    <!-- Our own CSS -->
+    <link rel="stylesheet" href="{{ app.request.basepath }}/css/style.css">
     
   </head>
   <body>
       <div class="container">
         {% block content %}{% endblock %}
         <footer>
-        <p>&copy; Gabriel Birke 2015</p>
+        <p>&copy; Gabriel Birke {{ "now"|date("Y") }}</p>
         </footer>
     </div>
 
