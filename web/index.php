@@ -17,6 +17,9 @@ if (!$dsn) {
     throw new \RuntimeException("Please configure DB in DB_DSN");
 }
 
+// Parameters
+$app["pinboard_url"] = "https://pinboard.in/";
+
 // Services
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../src/Resources/views',
@@ -48,8 +51,8 @@ $app->get("u:{user}", function (Application $app, $user) {
     if (empty($userId)) {
         $app['twig']->render('thisday_error.html.twig', ["error" => "User not found"]);
     }
-    $sql = "SELECT url, title, description, GROUP_CONCAT(DISTINCT tag ORDER BY seq ASC SEPARATOR ' ') as tags,
-        YEAR(b.created_at) as `year`
+    $sql = "SELECT url, title, description, GROUP_CONCAT(DISTINCT tag ORDER BY seq ASC SEPARATOR ' ') AS tags,
+        YEAR(b.created_at) AS `year`, UNIX_TIMESTAMP(b.created_at) AS ts
         FROM bookmarks b
         JOIN btags t ON b.id = t.bookmark_id
         WHERE b.user_id = ?
