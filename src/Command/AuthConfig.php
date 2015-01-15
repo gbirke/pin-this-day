@@ -10,6 +10,7 @@ namespace Birke\PinThisDay\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 
 /**
  * Configure username and Password for a command class 
@@ -37,13 +38,14 @@ class AuthConfig
         ;
     }
     
-    public function getApiKeyFromInput(InputInterface $input)
+    public function getCredentials(InputInterface $input)
     {
         $user = $input->getOption('user');
         $apiKey = $input->getOption('api_key');
         if (!$user || !$apiKey) {
+            // TODO: Try getenv
             throw new \RuntimeException("Missing credentials.");
         }
-        return "$user:$apiKey";
+        return [$user, $apiKey];
     }
 }

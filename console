@@ -4,6 +4,7 @@
 require __DIR__.'/vendor/autoload.php';
 
 use Birke\PinThisDay\Command\ImportCommand;
+use Birke\PinThisDay\Command\ImportAllCommand;
 use Birke\PinThisDay\Command\InitDbCommand;
 use Symfony\Component\Console\Application;
 
@@ -12,4 +13,5 @@ Dotenv::load(__DIR__);
 $application = new Application();
 $application->add(new InitDbCommand());
 $application->add(new ImportCommand());
+$application->add(new ImportAllCommand());
 $application->run();

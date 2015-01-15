@@ -43,12 +43,13 @@ class ImportCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $apiKey = $this->authConfig->getApiKeyFromInput($input);
+            list($user, $apiKey) = $this->authConfig->getCredentials($input);
+            $apiToken = "$user:$apiKey";
         } catch (\RuntimeException $ex) {
             $output->writeln($ex->getMessage());
             return;
         }
-        $this->initApi($apiKey);
+        $this->initApi($apiToken);
         $date = new \DateTime($input->getOption("date"));
         try {
             $dates = $this->getDates($date);
