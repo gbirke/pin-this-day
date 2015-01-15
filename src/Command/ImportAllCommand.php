@@ -7,6 +7,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Doctrine\Common\Cache\FilesystemCache;
 
 use Birke\PinThisDay\PinboardApi;
 use Birke\PinThisDay\UserManager;
@@ -58,9 +59,9 @@ class ImportAllCommand extends Command
         $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
         $manager = new UserManager($conn);
         $userId = $manager->getOrCreateUserId($user, $apiKey);
-        // use "get" instead of "get_all" for testing, so we don't run into the rate limit
-        $bookmarks = $this->api->get();
-        //$bookmarks = $this->api->get_all();
+        // use "get" instead of "get_all" for testing, to avoid rate limiting
+        //$bookmarks = $this->api->get();
+        $bookmarks = $this->api->get_all();
         $importer = new BookmarkImporter($conn);
         $importer->importBookmarks($bookmarks, $userId);
     }
@@ -68,6 +69,7 @@ class ImportAllCommand extends Command
     
     protected function initApi($apiKey)
     {
-        $this->api = new PinboardApi(null, $apiKey);
+        $this->api = new PinboardApi(null, $apiKey, 20, 300); // Allow for big timeouts for big
+        $this->api->postsCache = new FilesystemCache(__DIR__.'/../../app/cache');
     }
 }

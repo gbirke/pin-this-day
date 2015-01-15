@@ -29,4 +29,6 @@ To run it with the builtin PHP web server on Port 8082:
 ## TODO
 - RSS Feed
 - OAuth login (Facebook, twitter, github) and user profiles
+- Delete and edit buttons
+- Allow emoji (utf8mb4) in database (Import generates error on emoji)
 

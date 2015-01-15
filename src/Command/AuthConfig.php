@@ -43,7 +43,10 @@ class AuthConfig
         $user = $input->getOption('user');
         $apiKey = $input->getOption('api_key');
         if (!$user || !$apiKey) {
-            // TODO: Try getenv
+            $user   = getenv("PINBOARD_USER");
+            $apiKey = getenv("PINBOARD_APIKEY");
+        }
+        if (!$user || !$apiKey) {
             throw new \RuntimeException("Missing credentials.");
         }
         return [$user, $apiKey];

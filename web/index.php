@@ -44,26 +44,31 @@ $app->post("/set_user", function (Application $app, Request $req) {
 })->bind("set_user");
 
 $app->get("u:{user}", function (Application $app, $user) {
-    $userid = $app["db"]->fetchColumn("SELECT id FROM users WHERE login = ?", array($user));
-    if (empty($userid)) {
+    $userId = $app["db"]->fetchColumn("SELECT id FROM users WHERE login = ?", array($user));
+    if (empty($userId)) {
         $app['twig']->render('thisday_error.html.twig', ["error" => "User not found"]);
     }
     $sql = "SELECT url, title, description, GROUP_CONCAT(DISTINCT tag ORDER BY seq ASC SEPARATOR ' ') as tags,
         YEAR(b.created_at) as `year`
         FROM bookmarks b
         JOIN btags t ON b.id = t.bookmark_id
-        WHERE b.user_id = 1 
-        GROUP by url        
+        WHERE b.user_id = ?
+              AND MONTH(b.created_at) = ?
+              AND DAY(b.created_at) = ?
+        GROUP by url
         ORDER BY b.created_at DESC
-        
+        LIMIT 100
      ";
-    
-     $bookmarks = $app["db"]->fetchAll($sql, [$userid]);
-     return $app['twig']->render('thisday.html.twig', [
-         "bookmarks" => $bookmarks,
-         "user" => $user,
-         "userid" => $userid
-     ]);
+    $month = date("n");
+    $day = date("j");
+
+    $bookmarks = $app["db"]->fetchAll($sql, [$userId, $month, $day]);
+
+    return $app['twig']->render('thisday.html.twig', [
+        "bookmarks" => $bookmarks,
+        "user" => $user,
+        "userid" => $userId
+    ]);
 })->bind("thisday");
 
 $app->run();
