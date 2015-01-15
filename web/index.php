@@ -53,6 +53,7 @@ $app->get("u:{user}", function (Application $app, $user) {
         FROM bookmarks b
         JOIN btags t ON b.id = t.bookmark_id
         WHERE b.user_id = ?
+              AND YEAR(b.created_at) < ?
               AND MONTH(b.created_at) = ?
               AND DAY(b.created_at) = ?
         GROUP by url
@@ -61,8 +62,8 @@ $app->get("u:{user}", function (Application $app, $user) {
      ";
     $month = date("n");
     $day = date("j");
-
-    $bookmarks = $app["db"]->fetchAll($sql, [$userId, $month, $day]);
+    $year = date("Y");
+    $bookmarks = $app["db"]->fetchAll($sql, [$userId, $year, $month, $day]);
 
     return $app['twig']->render('thisday.html.twig', [
         "bookmarks" => $bookmarks,
