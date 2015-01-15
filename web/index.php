@@ -4,6 +4,7 @@ require_once __DIR__.'/../vendor/autoload.php';
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 $app = new Application();
 
@@ -19,6 +20,7 @@ if (!$dsn) {
 
 // Parameters
 $app["pinboard_url"] = "https://pinboard.in/";
+$app["cache.default_time"] = 400;
 
 // Services
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
@@ -30,11 +32,18 @@ $app->register(new Silex\Provider\DoctrineServiceProvider(), array(
         'url' => $dsn
     ),
 ));
+$app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
+    'http_cache.cache_dir' => __DIR__.'/../app/cache/http',
+    'http_cache.esi'       => null,
+));
 
 // routes
 
 $app->get("/", function (Application $app) {
-     return $app['twig']->render('index.html.twig');
+    $response = new Response($app['twig']->render('index.html.twig'));
+    $response->setSharedMaxAge($app["cache.default_time"]);
+    $response->setTtl($app["cache.default_time"]);
+    return $response;
 })->bind("index");
 
 $app->post("/set_user", function (Application $app, Request $req) {
@@ -68,11 +77,15 @@ $app->get("u:{user}", function (Application $app, $user) {
     $year = date("Y");
     $bookmarks = $app["db"]->fetchAll($sql, [$userId, $year, $month, $day]);
 
-    return $app['twig']->render('thisday.html.twig', [
+    $response = new Response($app['twig']->render('thisday.html.twig', [
         "bookmarks" => $bookmarks,
         "user" => $user,
         "userid" => $userId
-    ]);
+    ]));
+    $response->setTtl($app["cache.default_time"]);
+    $response->setSharedMaxAge($app["cache.default_time"]);
+    return $response;
 })->bind("thisday");
 
-$app->run();
+Request::setTrustedProxies(array('127.0.0.1'));
+$app["http_cache"]->run();
