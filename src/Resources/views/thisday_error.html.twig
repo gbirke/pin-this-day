@@ -1,0 +1,11 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>Oh noes!</h1>
+            <div class="alert alert-danger" role="alert">{{error}}</div>
+            <div><a href="{{ app.url_generator.generate('index') }}">Back to start page</a></div>
+        </div>
+    </div>
+{% endblock %}

@@ -6,24 +6,64 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
 $app = new Application();
+
+// Only for development
 $app["debug"] = true;
+Dotenv::load(__DIR__."/..");
+// ND only for development
+
+$dsn = getenv("DB_DSN");
+if (!$dsn) {
+    throw new \RuntimeException("Please configure DB in DB_DSN");
+}
 
 // Services
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
     'twig.path' => __DIR__.'/../src/Resources/views',
 ));
 $app->register(new Silex\Provider\UrlGeneratorServiceProvider());
+$app->register(new Silex\Provider\DoctrineServiceProvider(), array(
+    'db.options' => array(
+        'url' => $dsn
+    ),
+));
 
 // routes
 
 $app->get("/", function (Application $app) {
      return $app['twig']->render('index.html.twig');
-});
+})->bind("index");
 
 $app->post("/set_user", function (Application $app, Request $req) {
-    throw new Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Not implemented yet.");
-    // TODO: Redirect to user name from POST
-    //return $app->redirect()
+    $user = $req->request->get("username", "");
+    if ($user) {
+        return $app->redirect($app["url_generator"]->generate("thisday", ["user" => $user]));
+    } else {
+        return $app->redirect($app["url_generator"]->generate("index"));
+    }
 })->bind("set_user");
+
+$app->get("u:{user}", function (Application $app, $user) {
+    $userid = $app["db"]->fetchColumn("SELECT id FROM users WHERE login = ?", array($user));
+    if (empty($userid)) {
+        $app['twig']->render('thisday_error.html.twig', ["error" => "User not found"]);
+    }
+    $sql = "SELECT url, title, description, GROUP_CONCAT(DISTINCT tag ORDER BY seq ASC SEPARATOR ' ') as tags,
+        YEAR(b.created_at) as `year`
+        FROM bookmarks b
+        JOIN btags t ON b.id = t.bookmark_id
+        WHERE b.user_id = 1 
+        GROUP by url        
+        ORDER BY b.created_at DESC
+        
+     ";
+    
+     $bookmarks = $app["db"]->fetchAll($sql, [$userid]);
+     return $app['twig']->render('thisday.html.twig', [
+         "bookmarks" => $bookmarks,
+         "user" => $user,
+         "userid" => $userid
+     ]);
+})->bind("thisday");
 
 $app->run();

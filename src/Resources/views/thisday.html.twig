@@ -1,0 +1,29 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>On this day, on your Pinboard.in</h1>
+            {% set current_year = "" %}
+            {% for b in bookmarks %}
+                {% if b.year != current_year %}
+                    {% set current_year = b.year %}
+                    <h2>{{current_year}}</h2>
+                {% endif %}
+                <div>
+                    <h3>
+                        <a href="{{b.url}}">{{b.title}}</a>
+                    </h3>
+                    {% if b.description %}
+                        <div>{{b.description|nl2br}}</div>
+                    {% endif %}
+                    <p>
+                        {% for t in b.tags|split(" ") %}
+                            <a href="https://pinboard.in/u:{user}/t:{t}">{{t}}</a>
+                        {% endfor %}
+                    </p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
