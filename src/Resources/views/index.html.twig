@@ -1,0 +1,16 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            <h1>On this day, on your Pinboard.in</h1>
+            <form method="post" action="{{ app.url_generator.generate('set_user') }}">
+                <div class="form-group">
+                    <label for="username">Pinboard.in user name</label>
+                    <input name="username" id="username" />
+                </div>
+                <input type="submit" class="btn btn-primary" value="Show me!" />
+            </form>
+        </div>
+    </div>
+{% endblock %}
