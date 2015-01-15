@@ -31,11 +31,18 @@ class InitDbCommand extends Command
             'url' => $dsn,
         );
         $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+        $dbPlatform = $conn->getSchemaManager()->getDatabasePlatform();
         $schema = new DbSchema();
-        $queries = $schema->getSchemaSql($conn->getSchemaManager()->getDatabasePlatform());
+        $queries = $schema->getSchemaSql($dbPlatform);
         foreach ($queries as $q) {
-            $output->writeln($q);
+            //$output->writeln($q);
             $conn->exec($q);
+        }
+        if ($dbPlatform->getName() == "mysql") {
+            // Add auto-increments, see http://www.doctrine-project.org/jira/browse/DBAL-1118
+            foreach(["bookmarks", "btags", "users"] as $table) {
+                $conn->exec("ALTER TABLE `$table` CHANGE `id` `id` INT( 10 ) UNSIGNED NOT NULL AUTO_INCREMENT");
+            }
         }
         $conn->close();
     }
