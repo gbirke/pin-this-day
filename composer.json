@@ -9,5 +9,8 @@
         "symfony/console": "~2.6",
         "kijin/pinboard-api": "0.3.*",
         "doctrine/dbal": "~2.5"
+    },
+    "require-dev": {
+        "vlucas/phpdotenv": "~1.1"
     }
 }
