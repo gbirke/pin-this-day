@@ -67,7 +67,7 @@ $app->post("/set_user", function (Application $app, Request $req) {
     }
 })->bind("set_user");
 
-$app->get("u:{user}/summary", function(Application $app, $user) {
+$app->get("u:{user}/summary.atom", function(Application $app, $user) {
     $contentHeaders = ["Content-Type" => "application/atom+xml"];
     $feedCreator = new \Birke\PinThisDay\FeedCreator($app);
     $response = new Response($feedCreator->getSummaryFeed($user), 200, $contentHeaders);
