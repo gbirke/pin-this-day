@@ -1,0 +1,11 @@
+project_root: /var/www/virtual/thisday/application
+project_name: On This Day On Pinboard.in
+project_repo: git@github.com:gbirke/pin-this-day.git
+#project_release: 2
+project_branch: master
+project_env: prod
+project_console_opts: ''
+project_composer_opts: '--no-dev --optimize-autoloader --no-ansi --no-progress --no-interaction'
+project_php_path: php
+shared_dirs:
+- logs

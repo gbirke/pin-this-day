@@ -1,0 +1,2 @@
+[web]
+enif.uberspace.de 	ansible_ssh_user=thisday

@@ -1,0 +1,37 @@
+---
+- hosts: web
+  vars_files:
+      - vars/main.yml
+  pre_tasks:
+    - local_action: command date "+%Y%m%d%H%M"
+      register: deploy_time
+    - set_fact: project_release={{deploy_time.stdout}}
+  tasks:
+    - name: Create the release {{project_release}} directory.
+      file: state=directory path={{project_root}}/releases/{{project_release}}
+    - name: Create the shared directory.
+      file: state=directory path={{project_root}}/shared
+    - name: Create the shared/app/config directory.
+      file: state=directory path={{project_root}}/shared/config
+    - name: Create the shared/app/logs directory.
+      file: state=directory path={{project_root}}/shared/vcs
+    - name: Create common shared dirs
+      file: state=directory path={{project_root}}/shared/{{item}}
+      with_items: shared_dirs
+    - name: Clone/update bare repository in shared folder
+      git: repo={{project_repo}} dest={{project_root}}/shared/vcs
+    - name: Copy sources from local repository to release folder
+      shell: git archive {{project_branch}} | tar -x -C {{project_root}}/releases/{{project_release}}
+      args:
+        chdir: "{{project_root}}/shared/vcs"
+    - name: Create symlink for .env from shared directory
+      file: state=link src={{project_root}}/shared/config/.env path={{project_root}}/releases/{{project_release}}/.env
+    - name: Install composer
+      get_url: url=https://getcomposer.org/composer.phar dest={{project_root}}/composer.phar mode=0755 validate_certs=no
+    - name: Run composer install
+      shell: cd {{project_root}}/releases/{{project_release}} && {{project_php_path}} {{project_root}}/composer.phar install {{project_composer_opts}}
+    - name: Create symlink
+      file: state=link src={{project_root}}/releases/{{project_release}} path={{project_root}}/current
+    - name: Clear OpCache
+      shell: killall --quiet php-cgi
+      ignore_errors: yes
