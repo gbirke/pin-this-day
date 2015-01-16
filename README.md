@@ -30,10 +30,12 @@ To run it with the builtin PHP web server on Port 8082:
     ./runserver.sh
 
 ## TODO
-- RSS Feed
+- Class for unread entries
+- Handle empty tags
 - OAuth login (Facebook, twitter, github) and user profiles
 - Pagination instead of cutoff after 100 bookmarks
 - Denormalization of bookmark date in DB for better indexing and more speed.
 - Delete and edit buttons
+- Tag clouds
 - Allow emoji (utf8mb4) in database (Import generates error on emoji)
 

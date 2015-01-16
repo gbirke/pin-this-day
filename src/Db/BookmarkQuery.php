@@ -34,6 +34,7 @@ class BookmarkQuery {
                   AND YEAR(b.created_at) < ?
                   AND MONTH(b.created_at) = ?
                   AND DAY(b.created_at) = ?
+                  AND b.private = 0
             GROUP by url
             ORDER BY b.created_at DESC
             LIMIT 100
