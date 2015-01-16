@@ -6,7 +6,8 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-use Birke\PinThisDay\BookmarkQuery;
+use Birke\PinThisDay\Db\BookmarkQuery;
+use Birke\PinThisDay\Db\UserQuery;
 
 $app = new Application();
 
@@ -23,6 +24,7 @@ if (!$dsn) {
 // Parameters
 $app["pinboard_url"] = "https://pinboard.in/";
 $app["cache.default_time"] = 60;
+$app["cache.rss_time"] = 1;
 
 // Services
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
@@ -43,6 +45,10 @@ $app["bookmark_query"] = $app->share(function($app) {
     return new BookmarkQuery($app["db"]);
 });
 
+$app["user_query"] = $app->share(function($app) {
+    return new UserQuery($app["db"]);
+});
+
 // routes
 
 $app->get("/", function (Application $app) {
@@ -61,18 +67,23 @@ $app->post("/set_user", function (Application $app, Request $req) {
     }
 })->bind("set_user");
 
-$app->get("u:{user}/summary.atom", function(Application $app, $user) {
-    // TODO: Use bookmark_query service to get bookmarks, generate RSS
+$app->get("u:{user}/summary", function(Application $app, $user) {
+    $contentHeaders = ["Content-Type" => "application/atom+xml"];
+    $feedCreator = new \Birke\PinThisDay\FeedCreator($app);
+    $response = new Response($feedCreator->getSummaryFeed($user), 200, $contentHeaders);
+    $response->setTtl($app["cache.rss_time"]);
+    $response->setSharedMaxAge($app["cache.rss_time"]);
+    return $response;
 })->bind("summary_feed");
 
 
-$app->get("u:{user}", function (Application $app, $user) {
-    $userId = $app["db"]->fetchColumn("SELECT id FROM users WHERE login = ?", array($user));
+$app->get("u:{user}/{date}", function (Application $app, $user, $date) {
+    $userId = $app["user_query"]->getIdForUsername($user);
     if (empty($userId)) {
         $app['twig']->render('thisday_error.html.twig', ["error" => "User not found"]);
     }
 
-    $bookmarks = $app['bookmark_query']->getBookmarks(date("Y-n-j"), $userId);
+    $bookmarks = $app['bookmark_query']->getBookmarks($date->format("Y-n-j"), $userId);
     $response = new Response($app['twig']->render('thisday.html.twig', [
         "bookmarks" => $bookmarks,
         "user" => $user,
@@ -81,7 +92,12 @@ $app->get("u:{user}", function (Application $app, $user) {
     $response->setTtl($app["cache.default_time"]);
     $response->setSharedMaxAge($app["cache.default_time"]);
     return $response;
-})->bind("thisday");
+})
+    ->bind("thisday")
+    ->convert("date", function($date) { return new \DateTime($date);})
+    ->value("date", date("Y-m-d"))
+    ->assert("date", '\d{4}-\d{2}-\d{2}')
+;
 
 Request::setTrustedProxies(array('127.0.0.1'));
 $app["http_cache"]->run();

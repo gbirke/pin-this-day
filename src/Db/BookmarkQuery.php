@@ -6,7 +6,7 @@
  * Time: 10:07
  */
 
-namespace Birke\PinThisDay;
+namespace Birke\PinThisDay\Db;
 
 use Doctrine\DBAL\Connection;
 

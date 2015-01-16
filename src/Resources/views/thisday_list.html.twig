@@ -1,0 +1,22 @@
+{% set current_year = "" %}
+<div class="bookmarks">
+    {% for b in bookmarks %}
+        {% if b.year != current_year %}
+            {% set current_year = b.year %}
+            <h2 class="year">
+                <a href="{{ app.pinboard_url }}u:{{ user }}/before:{{ b.ts }}">{{current_year}}</a>
+            </h2>
+        {% endif %}
+        <div class="bookmark">
+            <a class="bookmark_title" href="{{b.url}}">{{b.title}}</a><br>
+            {%  if not summary_only is defined %}
+                {% if b.description %}
+                    <div class="description">{{b.description|trim|nl2br}}</div>
+                {% endif %}
+                {% for t in b.tags|split(" ") %}
+                <a class="tag btn btn-default btn-xs" href="{{ app.pinboard_url }}u:{{user}}/t:{{ t }}">{{ t }}</a>
+                {% endfor %}<br>
+            {% endif %}
+        </div>
+    {% endfor %}
+</div>

@@ -6,7 +6,7 @@
  * @author birkeg
  */
 
-namespace Birke\PinThisDay;
+namespace Birke\PinThisDay\Db;
 
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Platforms\AbstractPlatform;

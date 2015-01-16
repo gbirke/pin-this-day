@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Doctrine\Common\Cache\FilesystemCache;
 
 use Birke\PinThisDay\PinboardApi;
-use Birke\PinThisDay\UserManager;
+use Birke\PinThisDay\Db\UserQuery;
 use Birke\PinThisDay\BookmarkImporter;
 
 class ImportAllCommand extends Command
@@ -57,7 +57,7 @@ class ImportAllCommand extends Command
             'url' => $dsn,
         );
         $conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
-        $manager = new UserManager($conn);
+        $manager = new UserQuery($conn);
         $userId = $manager->getOrCreateUserId($user, $apiKey);
         // use "get" instead of "get_all" for testing, to avoid rate limiting
         //$bookmarks = $this->api->get();

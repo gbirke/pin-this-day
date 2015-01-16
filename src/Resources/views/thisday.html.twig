@@ -4,27 +4,16 @@
     <div class="row">
         <div class="col-xs-12">
             <h1>On this day, on your Pinboard.in</h1>
-            {% set current_year = "" %}
-            <div class="bookmarks">
-                {% for b in bookmarks %}
-                    {% if b.year != current_year %}
-                        {% set current_year = b.year %}
-                        <h2 class="year">
-                            <a href="{{ app.pinboard_url }}u:{{ user }}/before:{{ b.ts }}">{{current_year}}</a>
-                        </h2>
-                    {% endif %}
-                    <div class="bookmark">
-                        <a class="bookmark_title" href="{{b.url}}">{{b.title}}</a><br>
-                        {% if b.description %}
-                            <div class="description">{{b.description|trim|nl2br}}</div>
-                        {% endif %}
-                        {% for t in b.tags|split(" ") %}
-                            <a class="tag btn btn-default btn-xs" href="{{ app.pinboard_url }}u:{{user}}/t:{{ t }}">{{ t }}</a>
-                        {% endfor %}<br>
-
-                    </div>
-                {% endfor %}
-            </div>
+            {%  include "thisday_list.html.twig" %}
         </div>
     </div>
 {% endblock %}
+
+ {% block footer %}
+     <p>
+        <a href="{{ app.url_generator.generate("summary_feed", {"user":user}) }}"
+         rel="alternate" type="application/atom+xml">Summary Feed</a>
+     </p>
+     <hr>
+     {{  parent() }}
+ {% endblock %}

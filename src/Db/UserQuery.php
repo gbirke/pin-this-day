@@ -1,20 +1,20 @@
 <?php
 
 /**
- * This file contains the class UserManager
+ * This file contains the class UserQuery
  * 
  * @author birkeg
  */
-namespace Birke\PinThisDay;
+namespace Birke\PinThisDay\Db;
 
 use \Doctrine\DBAL\Connection;
 
 /**
- * Description of UserManager
+ * UserQuery contains all DB queries concerning the users table
  *
  * @author birkeg
  */
-class UserManager
+class UserQuery
 {
    /**
      *
@@ -40,5 +40,10 @@ class UserManager
         } else {
             return $ids[0]["id"];
         }
+    }
+
+    public function getIdForUsername($name)
+    {
+        return $this->db->fetchColumn("SELECT id FROM users WHERE login = ?", array($name));
     }
 }
