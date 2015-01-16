@@ -13,9 +13,9 @@
                 {% if b.description %}
                     <div class="description">{{b.description|trim|nl2br}}</div>
                 {% endif %}
-                {% for t in b.tags|split(" ") %}
-                <a class="tag btn btn-default btn-xs" href="{{ app.pinboard_url }}u:{{user}}/t:{{ t }}">{{ t }}</a>
-                {% endfor %}<br>
+                <p class="tags">
+                    {% include "bookmark_tags.html.twig" with {"tags": b.tags|split(" ")} %}
+                </p>
             {% endif %}
         </div>
     {% endfor %}

@@ -56,4 +56,42 @@ class FeedCreator {
         return $writer->execute();
     }
 
+    public function getLinkFeed($user, \DateTime $date)
+    {
+        $safeUser = strip_tags($user);
+
+        $writer = new \PicoFeed\Syndication\Atom();
+        $writer->title = 'On this day on Pinboard for '.$safeUser;
+        $writer->site_url = $this->container['url_generator']->generate("index", [], true);
+        $writer->feed_url = $this->container['url_generator']->generate("link_feed", ["user" => $user], true);
+
+        $userId = $this->container["user_query"]->getIdForUsername($user);
+        if (empty($userId)) {
+            $writer->description = sprintf("Empty feed - the user '%s' is not in our database.", $safeUser);
+            return $writer->execute();
+        }
+
+        $today = strtotime($date->format("Y-m-d")); // cut off the time part
+        $bookmarks = $this->container["bookmark_query"]->getBookmarks($date->format("Y-n-j"), $userId);
+        while ($bookmarks) {
+            $bookmark = array_pop($bookmarks); // Reverse array so "newest" are at the top of the feed.
+            $content = sprintf("<p>%s</p><p>Tags: %s</p>",
+                nl2br(strip_tags($bookmark["description"])),
+                $this->container["twig"]->render("bookmark_tags.html.twig", [
+                    "tags" => explode(" ", $bookmark["tags"]),
+                    "user" => $user
+                ])
+            );
+            $writer->items[] = array(
+                'title' => $bookmark["title"],
+                'updated' => $today,
+                'url' => $bookmark["url"],
+                'summary' => $bookmark["tags"],
+                'content' => $content
+            );
+            // TODO: Extend Atom class to add categories linking to the pinboard tags for user
+        }
+        return $writer->execute();
+    }
+
 } 

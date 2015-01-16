@@ -8,6 +8,10 @@ footer {
     max-width: 750px;
 }
 
+.feed-links a {
+    margin-right: 2em;
+}
+
 .year a {
     color:inherit;
 }

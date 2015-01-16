@@ -10,9 +10,20 @@
 {% endblock %}
 
  {% block footer %}
-     <p>
+     <p class="feed-links">
         <a href="{{ app.url_generator.generate("summary_feed", {"user":user}) }}"
-         rel="alternate" type="application/atom+xml">Summary Feed</a>
+         rel="alternate" type="application/atom+xml"
+         title="Atom feed with summaries for the last 7 days">
+            <img src="{{ app.request.basepath }}/images/feed-icon-14x14.png" alt="feed icon" />
+            Weekly Summary Feed
+        </a>
+
+         <a href="{{ app.url_generator.generate("summary_feed", {"user":user}) }}"
+            rel="alternate" type="application/atom+xml"
+            title="Atom feed with all the links of the current day">
+             <img src="{{ app.request.basepath }}/images/feed-icon-14x14.png" alt="feed icon" />
+             Daily Link Feed
+         </a>
      </p>
      <hr>
      {{  parent() }}

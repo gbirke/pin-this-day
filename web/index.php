@@ -76,6 +76,14 @@ $app->get("u:{user}/summary.atom", function(Application $app, $user) {
     return $response;
 })->bind("summary_feed");
 
+$app->get("u:{user}/links.atom", function(Application $app, $user) {
+    $contentHeaders = ["Content-Type" => "application/atom+xml"];
+    $feedCreator = new \Birke\PinThisDay\FeedCreator($app);
+    $response = new Response($feedCreator->getLinkFeed($user, new \DateTime()), 200, $contentHeaders);
+    $response->setTtl($app["cache.rss_time"]);
+    $response->setSharedMaxAge($app["cache.rss_time"]);
+    return $response;
+})->bind("link_feed");
 
 $app->get("u:{user}/{date}", function (Application $app, $user, $date) {
     $userId = $app["user_query"]->getIdForUsername($user);
