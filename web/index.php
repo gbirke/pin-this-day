@@ -6,6 +6,8 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+use Birke\PinThisDay\BookmarkQuery;
+
 $app = new Application();
 
 // Only for development
@@ -37,6 +39,10 @@ $app->register(new Silex\Provider\HttpCacheServiceProvider(), array(
     'http_cache.esi'       => null,
 ));
 
+$app["bookmark_query"] = $app->share(function($app) {
+    return new BookmarkQuery($app["db"]);
+});
+
 // routes
 
 $app->get("/", function (Application $app) {
@@ -55,28 +61,18 @@ $app->post("/set_user", function (Application $app, Request $req) {
     }
 })->bind("set_user");
 
+$app->get("u:{user}/summary.atom", function(Application $app, $user) {
+    // TODO: Use bookmark_query service to get bookmarks, generate RSS
+})->bind("summary_feed");
+
+
 $app->get("u:{user}", function (Application $app, $user) {
     $userId = $app["db"]->fetchColumn("SELECT id FROM users WHERE login = ?", array($user));
     if (empty($userId)) {
         $app['twig']->render('thisday_error.html.twig', ["error" => "User not found"]);
     }
-    $sql = "SELECT url, title, description, GROUP_CONCAT(DISTINCT tag ORDER BY seq ASC SEPARATOR ' ') AS tags,
-        YEAR(b.created_at) AS `year`, UNIX_TIMESTAMP(b.created_at) AS ts
-        FROM bookmarks b
-        JOIN btags t ON b.id = t.bookmark_id
-        WHERE b.user_id = ?
-              AND YEAR(b.created_at) < ?
-              AND MONTH(b.created_at) = ?
-              AND DAY(b.created_at) = ?
-        GROUP by url
-        ORDER BY b.created_at DESC
-        LIMIT 100
-     ";
-    $month = date("n");
-    $day = date("j");
-    $year = date("Y");
-    $bookmarks = $app["db"]->fetchAll($sql, [$userId, $year, $month, $day]);
 
+    $bookmarks = $app['bookmark_query']->getBookmarks(date("Y-n-j"), $userId);
     $response = new Response($app['twig']->render('thisday.html.twig', [
         "bookmarks" => $bookmarks,
         "user" => $user,
