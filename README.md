@@ -8,7 +8,7 @@ At the moment users have to be added to the database manually.
 
 
 ## Installation
-Download and unzip archive from Github, go to folder and run
+Download and unzip archive from GitHub, go to folder and run
 
     composer install
 
@@ -30,7 +30,6 @@ To run it with the builtin PHP web server on Port 8082:
     ./runserver.sh
 
 ## TODO
-- Class for unread entries
 - Handle empty tags
 - OAuth login (Facebook, twitter, github) and user profiles
 - Pagination instead of cutoff after 100 bookmarks

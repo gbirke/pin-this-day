@@ -35,3 +35,7 @@ footer {
 .bookmark .tag {
     text-decoration: none;
 }
+
+.unread .bookmark_title {
+    color:#b41 ;
+}

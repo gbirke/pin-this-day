@@ -26,7 +26,8 @@ class BookmarkQuery {
     public function getBookmarks($date, $userId)
     {
         // TODO Pagination
-        $sql = "SELECT url, title, description, GROUP_CONCAT(DISTINCT tag ORDER BY seq ASC SEPARATOR ' ') AS tags,
+        $sql = "SELECT url, title, description, toread,
+            GROUP_CONCAT(DISTINCT tag ORDER BY seq ASC SEPARATOR ' ') AS tags,
             YEAR(b.created_at) AS `year`, UNIX_TIMESTAMP(b.created_at) AS ts
             FROM bookmarks b
             JOIN btags t ON b.id = t.bookmark_id
