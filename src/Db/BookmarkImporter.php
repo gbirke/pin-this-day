@@ -5,7 +5,7 @@
  * 
  * @author birkeg
  */
-namespace Birke\PinThisDay;
+namespace Birke\PinThisDay\Db;
 
 use \Doctrine\DBAL\Connection;
 
@@ -30,12 +30,14 @@ class BookmarkImporter
         $this->ignoreErrors = $ignoreErrors;
     }
     
-    public function importBookmarks($bookmarks, $userid)
+    public function importBookmarks($bookmarks, $userId)
     {
         $this->db->beginTransaction();
+        $this->db->delete('btags', ["user_id" => $userId]);
+        $this->db->delete('bookmarks', ["user_id" => $userId]);
         foreach ($bookmarks as $bookmark) {
             try {
-                $this->insertBookmark($bookmark, $userid);
+                $this->insertBookmark($bookmark, $userId);
             } catch (\Doctrine\DBAL\Exception\DriverException $e) {
                 error_log($e->getMessage());
                 if (!$this->ignoreErrors) {
@@ -47,10 +49,10 @@ class BookmarkImporter
         $this->db->commit();
     }
 
-    protected function insertBookmark(\PinboardBookmark $bookmark, $userid) {
+    protected function insertBookmark(\PinboardBookmark $bookmark, $userId) {
         $createdAt = date("Y-m-d H:i:s", $bookmark->timestamp);
         $data = [
-            "user_id" => $userid,
+            "user_id" => $userId,
             "url" => $bookmark->url,
             "title" => $bookmark->title,
             "description" => $bookmark->description,
@@ -64,7 +66,7 @@ class BookmarkImporter
         $bookmarkId = $this->db->lastInsertId();
         foreach ($bookmark->tags as $seq => $tag) {
             $data = [
-                "user_id" => $userid,
+                "user_id" => $userId,
                 "bookmark_id" => $bookmarkId,
                 "created_at" => $createdAt,
                 "private" => intval(!$bookmark->is_public),

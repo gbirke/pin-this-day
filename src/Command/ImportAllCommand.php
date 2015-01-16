@@ -11,12 +11,12 @@ use Doctrine\Common\Cache\FilesystemCache;
 
 use Birke\PinThisDay\PinboardApi;
 use Birke\PinThisDay\Db\UserQuery;
-use Birke\PinThisDay\BookmarkImporter;
+use Birke\PinThisDay\Db\BookmarkImporter;
 
 class ImportAllCommand extends Command
 {
     /**
-     * @var Birke\PinThisDay\PinboardApi
+     * @var PinboardApi
      */
     protected $api;
 
