@@ -1,3 +1,5 @@
 {% for t in tags %}
-    <a class="tag btn btn-default btn-xs" href="{{ app.pinboard_url }}u:{{user}}/t:{{ t }}">{{ t }}</a>
+    {%  if t %}
+        <a class="tag" href="{{ app.pinboard_url }}u:{{user}}/t:{{ t }}">{{ t }}</a>
+    {% endif %}
 {% endfor %}

@@ -34,6 +34,7 @@ footer {
 
 .bookmark .tag {
     text-decoration: none;
+    line-height: 190%;
 }
 
 .unread .bookmark_title {

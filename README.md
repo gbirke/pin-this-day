@@ -30,7 +30,6 @@ To run it with the builtin PHP web server on Port 8082:
     ./runserver.sh
 
 ## TODO
-- Handle empty tags
 - OAuth login (Facebook, twitter, github) and user profiles
 - Pagination instead of cutoff after 100 bookmarks
 - Denormalization of bookmark date in DB for better indexing and more speed.
