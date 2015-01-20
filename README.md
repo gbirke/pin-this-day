@@ -21,7 +21,7 @@ Initialize the database:
 
     ./console dbinit
 
-Import your data with the console
+Import your data on the console and create your first user:
 
     ./console import:all -u your_pinboard_username -a your_pinboard_api_key
 
@@ -32,6 +32,8 @@ To run it with the builtin PHP web server on Port 8082:
 ## TODO
 - OAuth login (Facebook, twitter, github) and user profiles
 - Pagination instead of cutoff after 100 bookmarks
+- Settings page (for setting asecending/descending order, max. number of Bookmarks per year, display private bookmarks)
+- RSS feed with HTTP auth
 - Denormalization of bookmark date in DB for better indexing and more speed.
 - Delete and edit buttons
 - Tag clouds
