@@ -29,6 +29,23 @@ To run it with the builtin PHP web server on Port 8082:
 
     ./runserver.sh
 
+## Deployment with [Ansible](http://www.ansible.com)
+
+1. Fork the repository.
+2. Log in to your deployment host with SSH and add the SSH public key of the _deployment host_ to your deployment keys on GitHub. 
+3. Add the GitHub host to .ssh/known_hosts.
+4. Log out from deployment host
+5. create a file `deployment/inventory` (see below for example).
+6. Edit the project root and repository settings in `deployment/vars/main.yml` 
+7. Call `ansible-playbook  -i deployment/inventory deployment/deployment.yml`
+
+
+Example `deployment/inventory` file:
+```
+[web]
+your.host.name.com 	ansible_ssh_user=your_ssh_username_on_host
+```
+
 ## TODO
 - OAuth login (Facebook, twitter, github) and user profiles
 - Pagination instead of cutoff after 100 bookmarks

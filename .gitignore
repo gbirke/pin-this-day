@@ -4,3 +4,5 @@ vendor
 test.php
 .env
 app/cache
+deployment/inventory
+
