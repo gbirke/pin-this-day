@@ -11,15 +11,14 @@ use Birke\PinThisDay\Db\UserQuery;
 
 $app = new Application();
 
-// Only for development
-$app["debug"] = true;
 Dotenv::load(__DIR__."/..");
-// ND only for development
 
 $dsn = getenv("DB_DSN");
 if (!$dsn) {
     throw new \RuntimeException("Please configure DB in DB_DSN");
 }
+
+$app["debug"] = getenv("SILEX_ENV") != "prod";
 
 // Parameters
 $app["pinboard_url"] = "https://pinboard.in/";
