@@ -80,6 +80,7 @@ class DbSchema
         $table->addColumn('login', "string", array("notnull" => false, "length" => 40));
         $table->addColumn('password', "string", array("notnull" => false, "length" => 60));
         $table->addColumn('api_key', "string", array("notnull" => false, "length" => 60));
+        $table->addColumn("last_update", "datetime", array("notnull" => false));
         $table->setPrimaryKey(array('id'));
         $table->addUniqueIndex(array('login'));
     }

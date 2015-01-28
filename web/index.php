@@ -92,10 +92,12 @@ $app->get("u:{user}/{date}", function (Application $app, $user, $date) {
     }
 
     $bookmarks = $app['bookmark_query']->getBookmarks($date->format("Y-n-j"), $userId);
+    $lastUpdate = $app["user_query"]->getLastUpdateForUser($userId);
     $response = new Response($app['twig']->render('thisday.html.twig', [
         "bookmarks" => $bookmarks,
         "user" => $user,
-        "userid" => $userId
+        "userid" => $userId,
+        "last_update" => $lastUpdate
     ]));
     $response->setTtl($app["cache.default_time"]);
     $response->setSharedMaxAge($app["cache.default_time"]);

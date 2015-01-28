@@ -40,3 +40,11 @@ footer {
 .unread .bookmark_title {
     color:#b41 ;
 }
+
+.last_update {
+    color:#ccc;
+    font-style: italic;
+    float:right;
+    padding-top:5px;
+    font-size:80%;
+}

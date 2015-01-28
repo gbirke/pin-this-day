@@ -46,6 +46,11 @@ class BookmarkImporter
                 }
             }
         }
+        $this->db->update("users", [
+                "last_update" => date("Y-m-d H:i:s")
+            ],
+            ["id" => $userId]
+        );
         $this->db->commit();
     }
 

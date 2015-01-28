@@ -46,4 +46,9 @@ class UserQuery
     {
         return $this->db->fetchColumn("SELECT id FROM users WHERE login = ?", array($name));
     }
+
+    public function getLastUpdateForUser($id)
+    {
+        return $this->db->fetchColumn("SELECT last_update FROM users WHERE id = ?", array($id));
+    }
 }
