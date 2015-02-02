@@ -47,7 +47,6 @@ your.host.name.com 	ansible_ssh_user=your_ssh_username_on_host
 ```
 
 ## TODO
-- Put full date with name of day in the `title` tag of the years
 - OAuth login (Facebook, twitter, github) and user profiles
 - Pagination instead of cutoff after 100 bookmarks
 - Settings page (for setting asecending/descending order, max. number of Bookmarks per year, display private bookmarks)
