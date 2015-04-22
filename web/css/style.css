@@ -3,6 +3,7 @@ footer {
     margin-top: 2em;
 }
 
+/* year headlines */
 .year {
     border-bottom:dotted grey 1px;
     max-width: 750px;
@@ -28,6 +29,10 @@ footer {
     text-decoration: none;
 }
 
+.bookmark a.bookmark_title:visited {
+    color: #3773A5;
+}
+
 .bookmark .description {
     margin-top:2px;
 }
@@ -37,8 +42,12 @@ footer {
     line-height: 190%;
 }
 
-.unread .bookmark_title {
+.unread .bookmark_title:link {
     color:#b41 ;
+}
+
+.unread .bookmark_title:hover, .unread a.bookmark_title:visited {
+    color:#6F2100 ;
 }
 
 .last_update {
