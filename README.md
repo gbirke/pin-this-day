@@ -49,7 +49,7 @@ your.host.name.com 	ansible_ssh_user=your_ssh_username_on_host
 ## TODO
 - OAuth login (Facebook, twitter, github) and user profiles
 - Pagination instead of cutoff after 100 bookmarks
-- Settings page (for setting asecending/descending order, max. number of Bookmarks per year, display private bookmarks)
+- Settings page (for setting ascending/descending order, max. number of Bookmarks per year, display private bookmarks)
 - RSS feed with HTTP auth
 - Denormalization of bookmark date in DB for better indexing and more speed.
 - Delete and edit buttons
