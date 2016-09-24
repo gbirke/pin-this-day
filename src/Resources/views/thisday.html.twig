@@ -3,7 +3,12 @@
 {% block content %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>On this day, on your Pinboard.in</h1>
+            <h1>On {% if today %}this day,{% else %}{{ current_date|date("Y-m-d") }}{% endif %} on your Pinboard.in</h1>
+        </div>
+
+        {% include "thisday_pagination.html.twig" %}
+
+        <div class="col-xs-12">
             {%  include "thisday_list.html.twig" %}
         </div>
     </div>

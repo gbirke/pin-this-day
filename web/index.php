@@ -84,20 +84,33 @@ $app->get("u:{user}/links.atom", function(Application $app, $user) {
     return $response;
 })->bind("link_feed");
 
-$app->get("u:{user}/{date}", function (Application $app, $user, $date) {
+$app->get("u:{user}/{date}", function (Application $app, $user, \DateTime $date) {
     $userId = $app["user_query"]->getIdForUsername($user);
     if (empty($userId)) {
         $app['twig']->render('thisday_error.html.twig', ["error" => "User not found"]);
     }
 
+    $now = new \DateTime();
+    $dateIsToday = $date->format("Y-m-d") === $now->format("Y-m-d");
+    $prevDate = clone $date;
+    $nextDate = clone $date;
+    $prevDate->modify('-1 day');
+    $nextDate->modify('+1 day');
     $bookmarks = $app['bookmark_query']->getBookmarks($date->format("Y-n-j"), $userId);
     $lastUpdate = $app["user_query"]->getLastUpdateForUser($userId);
-    $response = new Response($app['twig']->render('thisday.html.twig', [
+    $responseContext = [
+        "today" => $dateIsToday,
         "bookmarks" => $bookmarks,
         "user" => $user,
         "userid" => $userId,
-        "last_update" => $lastUpdate
-    ]));
+        "last_update" => $lastUpdate,
+        "current_date" => $date,
+        "prev_date" => $prevDate
+    ];
+    if ( !$dateIsToday ) {
+        $responseContext["next_date"] = $nextDate;
+    }
+    $response = new Response($app['twig']->render('thisday.html.twig', $responseContext));
     $response->setTtl($app["cache.default_time"]);
     $response->setSharedMaxAge($app["cache.default_time"]);
     return $response;
