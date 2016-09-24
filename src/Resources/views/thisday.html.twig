@@ -1,9 +1,13 @@
 {% extends "base.html.twig" %}
 
+{% block title %}
+    {% if today %}On this day{% else %}{{ current_date|date("F jS") }}{% endif %}, on your Pinboard.in
+{% endblock %}
+
 {% block content %}
     <div class="row">
         <div class="col-xs-12">
-            <h1>On {% if today %}this day,{% else %}{{ current_date|date("Y-m-d") }}{% endif %} on your Pinboard.in</h1>
+            <h1>{% if today %}On this day{% else %}{{ current_date|date("F jS") }}{% endif %}, on your Pinboard.in</h1>
         </div>
 
         {% include "thisday_pagination.html.twig" %}
