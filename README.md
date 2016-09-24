@@ -47,7 +47,6 @@ your.host.name.com 	ansible_ssh_user=your_ssh_username_on_host
 ```
 
 ## TODO
-- Update Bootstrap and add local fallback for Bootstrap CDN.
 - Pagination instead of cutoff after 100 bookmarks
 - Tag cloud for each day, to see what was interesting on that day.
 - Delete, edit and "mark as unread" buttons - Can be implemented separately. Delete and unread buttons are easy, edit needs a form functionality that reproduces the one form pinboard.in.
