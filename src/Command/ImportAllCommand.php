@@ -62,6 +62,10 @@ class ImportAllCommand extends Command
         // use "get" instead of "get_all" for testing, to avoid rate limiting
         //$bookmarks = $this->api->get();
         $bookmarks = $this->api->get_all();
+        if (empty($bookmarks)) {
+            $output->writeln(sprintf('No bookmarks found for user "%s".', $user));
+            return;
+        }
         $importer = new BookmarkImporter($conn);
         $importer->importBookmarks($bookmarks, $userId);
     }
