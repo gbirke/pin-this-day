@@ -47,6 +47,7 @@ your.host.name.com 	ansible_ssh_user=your_ssh_username_on_host
 ```
 
 ## TODO
+- Make year numbers a column that sticks, using [jQuery Sticky Kit](http://leafo.net/sticky-kit/).
 - Pagination instead of cutoff after 100 bookmarks
 - Tag cloud for each day, to see what was interesting on that day.
 - Delete, edit and "mark as unread" buttons - Can be implemented separately. Delete and unread buttons are easy, edit needs a form functionality that reproduces the one form pinboard.in.
